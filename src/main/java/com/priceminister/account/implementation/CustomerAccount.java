@@ -3,7 +3,7 @@ package com.priceminister.account.implementation;
 import com.priceminister.account.Account;
 import com.priceminister.account.WithdrawalStrategy;
 import com.priceminister.account.exceptions.IllegalBalanceException;
-import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
+import com.priceminister.account.exceptions.IllegalAmountException;
 
 import java.math.BigDecimal;
 
@@ -25,11 +25,11 @@ public class CustomerAccount implements Account {
     }
 
     @Override
-    public void add(BigDecimal addedAmount) throws IllegalWithdrawAmountException {
+    public void add(BigDecimal addedAmount) throws IllegalAmountException {
         currentStrategy.add(addedAmount);
     }
 
-    void addAmount(BigDecimal addedAmount) throws IllegalWithdrawAmountException {
+    void addAmount(BigDecimal addedAmount) throws IllegalAmountException {
         currentBalance = currentBalance.add(addedAmount);
     }
 
@@ -39,7 +39,7 @@ public class CustomerAccount implements Account {
     }
 
     @Override
-    public BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount) throws IllegalBalanceException, IllegalWithdrawAmountException {
+    public BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount) throws IllegalBalanceException, IllegalAmountException {
         currentStrategy.withdraw(withdrawnAmount);
         return getBalance();
     }

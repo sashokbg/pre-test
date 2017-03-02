@@ -1,8 +1,8 @@
 package com.priceminister.account;
 
 
+import com.priceminister.account.exceptions.IllegalAmountException;
 import com.priceminister.account.exceptions.IllegalBalanceException;
-import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
 import com.priceminister.account.implementation.CreditWithdrawStrategy;
 import com.priceminister.account.implementation.CustomerAccount;
 import org.junit.Before;
@@ -46,7 +46,7 @@ public class CustomerAccountTest {
     }
 
     @Test
-    public void add_positive_amount_to_account() throws IllegalWithdrawAmountException {
+    public void add_positive_amount_to_account() throws IllegalAmountException {
         //given a fresh account and an amount to add
         BigDecimal amountToAdd = BigDecimal.valueOf(POSITIVE_VALUE);
         BigDecimal oldBalance = customerAccount.getBalance();
@@ -71,7 +71,7 @@ public class CustomerAccountTest {
     }
 
     @Test
-    public void should_successfully_withdraw_money_if_positive_amount_after_op() throws IllegalBalanceException, IllegalWithdrawAmountException {
+    public void should_successfully_withdraw_money_if_positive_amount_after_op() throws IllegalBalanceException, IllegalAmountException {
         //given an account with a balance that is bigger than the withdrawal
         BigDecimal amountToWithdraw = BigDecimal.valueOf(POSITIVE_VALUE);
         BigDecimal balance = BigDecimal.valueOf(POSITIVE_VALUE+1);
@@ -85,7 +85,7 @@ public class CustomerAccountTest {
     }
 
     @Test
-    public void should_add_a_decimal_value_to_balance() throws IllegalWithdrawAmountException {
+    public void should_add_a_decimal_value_to_balance() throws IllegalAmountException {
         //given an account with cash and a decimal amount to add
         customerAccount.add(new BigDecimal(POSITIVE_VALUE));
         BigDecimal addedAmount = new BigDecimal("0.33");
@@ -98,7 +98,7 @@ public class CustomerAccountTest {
     }
 
     @Test
-    public void should_withdraw_a_decimal_value_from_balance() throws IllegalBalanceException, IllegalWithdrawAmountException {
+    public void should_withdraw_a_decimal_value_from_balance() throws IllegalBalanceException, IllegalAmountException {
         //given an account with cash and a decimal withdraw amount
         customerAccount.add(new BigDecimal(POSITIVE_VALUE));
         BigDecimal withdrawnAmount = new BigDecimal("0.33");
@@ -111,33 +111,33 @@ public class CustomerAccountTest {
     }
 
     @Test
-    public void should_not_allow_withdraw_of_negative_amounts() throws IllegalBalanceException, IllegalWithdrawAmountException {
+    public void should_not_allow_withdraw_of_negative_amounts() throws IllegalBalanceException, IllegalAmountException {
         //given an account with cash and a negative withdraw amount
         customerAccount.add(new BigDecimal(POSITIVE_VALUE));
         BigDecimal withdrawnAmount = new BigDecimal("-3");
 
         //when we withdraw the decimal sum
-        //we expect an IllegalWithdrawAmountException exception
-        assertThatExceptionOfType(IllegalWithdrawAmountException.class)
+        //we expect an IllegalAmountException exception
+        assertThatExceptionOfType(IllegalAmountException.class)
                 .isThrownBy(() -> customerAccount.withdrawAndReportBalance(withdrawnAmount))
                 .withMessage("Illegal amount: -3");
     }
 
     @Test
-    public void should_not_allow_add_of_negative_amounts() throws IllegalBalanceException, IllegalWithdrawAmountException {
+    public void should_not_allow_add_of_negative_amounts() throws IllegalBalanceException, IllegalAmountException {
         //given an account with cash and a negative amount to add
         customerAccount.add(new BigDecimal(POSITIVE_VALUE));
         BigDecimal amountToAdd = new BigDecimal("-3");
 
         //when we withdraw the decimal sum
-        //we expect an IllegalWithdrawAmountException exception
-        assertThatExceptionOfType(IllegalWithdrawAmountException.class)
+        //we expect an IllegalAmountException exception
+        assertThatExceptionOfType(IllegalAmountException.class)
                 .isThrownBy(() -> customerAccount.add(amountToAdd))
                 .withMessage("Illegal amount: -3");
     }
 
     @Test
-    public void should_allow_negative_balance_for_credit() throws IllegalBalanceException, IllegalWithdrawAmountException {
+    public void should_allow_negative_balance_for_credit() throws IllegalBalanceException, IllegalAmountException {
         //given a fresh account with credit strategy
         CustomerAccount creditAccount = new CustomerAccount(new CreditWithdrawStrategy());
 

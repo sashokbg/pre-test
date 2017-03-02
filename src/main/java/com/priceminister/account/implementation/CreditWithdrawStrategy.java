@@ -1,8 +1,8 @@
 package com.priceminister.account.implementation;
 
+import com.priceminister.account.exceptions.IllegalAmountException;
 import com.priceminister.account.exceptions.IllegalBalanceException;
-import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
-import com.priceminister.account.implementation.rules.AccountRule;
+import com.priceminister.account.implementation.rules.OperationRule;
 import com.priceminister.account.WithdrawalStrategy;
 import com.priceminister.account.implementation.rules.NoNegativeAmountRule;
 
@@ -10,9 +10,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A withdrawal strategy implementation for a credit account - an account that does allow negative balance
+ */
 public class CreditWithdrawStrategy implements WithdrawalStrategy {
     private CustomerAccount account;
-    private List<AccountRule> rules;
+    private List<OperationRule> rules;
 
     public CreditWithdrawStrategy() {
         rules = new ArrayList<>();
@@ -29,20 +32,20 @@ public class CreditWithdrawStrategy implements WithdrawalStrategy {
     }
 
     @Override
-    public void withdraw(BigDecimal amount) throws IllegalBalanceException, IllegalWithdrawAmountException {
-        for (AccountRule rule : rules) {
+    public void withdraw(BigDecimal amount) throws IllegalBalanceException, IllegalAmountException {
+        for (OperationRule rule : rules) {
             rule.withdrawPermitted(amount, account);
         }
         account.withdraw(amount);
     }
 
     @Override
-    public void add(BigDecimal amount) throws IllegalWithdrawAmountException {
+    public void add(BigDecimal amount) throws IllegalAmountException {
 
     }
 
     @Override
-    public void addRule(AccountRule rule) {
+    public void addRule(OperationRule rule) {
         rules.add(rule);
     }
 }
