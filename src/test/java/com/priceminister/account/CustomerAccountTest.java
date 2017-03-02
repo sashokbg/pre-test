@@ -4,7 +4,7 @@ package com.priceminister.account;
 import com.priceminister.account.exceptions.IllegalBalanceException;
 import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
 import com.priceminister.account.implementation.CustomerAccount;
-import com.priceminister.account.implementation.CustomerAccountRule;
+import com.priceminister.account.implementation.rules.AccountRule;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,7 +68,7 @@ public class CustomerAccountTest {
         //when we withdraw the amount
         //then should throw illegal balance exception
         assertThatExceptionOfType(IllegalBalanceException.class)
-                .isThrownBy(() -> customerAccount.withdrawAndReportBalance(amountToWithdraw, new CustomerAccountRule()))
+                .isThrownBy(() -> customerAccount.withdrawAndReportBalance(amountToWithdraw))
                 .withMessage("Illegal account balance: "+customerAccount.getBalance().subtract(amountToWithdraw));
     }
 
@@ -80,7 +80,7 @@ public class CustomerAccountTest {
         customerAccount.add(balance);
 
         //when we withdraw the amount
-        BigDecimal newBalance = customerAccount.withdrawAndReportBalance(amountToWithdraw, new CustomerAccountRule());
+        BigDecimal newBalance = customerAccount.withdrawAndReportBalance(amountToWithdraw);
 
         //then we should have a new balance equal to the difference of the two amounts
         assertThat(newBalance).isEqualTo(balance.subtract(amountToWithdraw));
@@ -106,7 +106,7 @@ public class CustomerAccountTest {
         BigDecimal withdrawnAmount = new BigDecimal("0.33");
 
         //when we withdraw the decimal sum
-        BigDecimal balance = customerAccount.withdrawAndReportBalance(withdrawnAmount, new CustomerAccountRule());
+        BigDecimal balance = customerAccount.withdrawAndReportBalance(withdrawnAmount);
 
         //we expect the exact value for the balance
         assertThat(balance).isEqualTo(new BigDecimal("26.67"));
@@ -121,7 +121,7 @@ public class CustomerAccountTest {
         //when we withdraw the decimal sum
         //we expect an IllegalWithdrawAmountException exception
         assertThatExceptionOfType(IllegalWithdrawAmountException.class)
-                .isThrownBy(() -> customerAccount.withdrawAndReportBalance(withdrawnAmount, new CustomerAccountRule()))
+                .isThrownBy(() -> customerAccount.withdrawAndReportBalance(withdrawnAmount))
                 .withMessage("Illegal amount: -3");
     }
 

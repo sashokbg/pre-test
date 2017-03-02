@@ -1,6 +1,8 @@
 package com.priceminister.account.exceptions;
 
-public class IllegalBalanceException extends Exception {
+import javax.security.auth.login.*;
+
+public class IllegalBalanceException extends AccountException {
 
     public IllegalBalanceException() {
     }

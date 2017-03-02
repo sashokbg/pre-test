@@ -1,5 +1,6 @@
 package com.priceminister.account;
 
+import com.priceminister.account.exceptions.AccountException;
 import com.priceminister.account.exceptions.IllegalBalanceException;
 import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
 
@@ -20,11 +21,10 @@ public interface Account {
     /**
      * Withdraws money from the account.
      * @param withdrawnAmount - the money to withdraw
-     * @param rule - the AccountRule that defines which balance is allowed for this account
      * @return the remaining account balance
      * @throws IllegalBalanceException if the withdrawal leaves the account with a forbidden balance
      */
-    BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount, AccountRule rule) throws IllegalBalanceException, IllegalWithdrawAmountException;
+    BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount) throws IllegalBalanceException, IllegalWithdrawAmountException;
     
     /**
      * Gets the current account balance.

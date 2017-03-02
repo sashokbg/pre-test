@@ -1,7 +1,7 @@
 package com.priceminister.account.implementation;
 
 import com.priceminister.account.Account;
-import com.priceminister.account.AccountRule;
+import com.priceminister.account.WithdrawalStrategy;
 import com.priceminister.account.exceptions.IllegalBalanceException;
 import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
 
@@ -10,14 +10,25 @@ import java.math.BigDecimal;
 
 public class CustomerAccount implements Account {
     private BigDecimal currentBalance;
+    private WithdrawalStrategy currentStrategy;
 
     public CustomerAccount() {
+        currentBalance = BigDecimal.ZERO;
+        // the strategy by default
+        this.currentStrategy = new DebitWithdrawalStrategy(this);
+    }
+
+    public CustomerAccount(WithdrawalStrategy withdrawalStrategy) {
+        this.currentStrategy = withdrawalStrategy;
         currentBalance = BigDecimal.ZERO;
     }
 
     @Override
     public void add(BigDecimal addedAmount) throws IllegalWithdrawAmountException {
-        checkForNegativeAmount(addedAmount);
+        currentStrategy.add(addedAmount);
+    }
+
+    void addAmount(BigDecimal addedAmount) throws IllegalWithdrawAmountException {
         currentBalance = currentBalance.add(addedAmount);
     }
 
@@ -27,25 +38,12 @@ public class CustomerAccount implements Account {
     }
 
     @Override
-    public BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount, AccountRule rule)
-            throws IllegalBalanceException, IllegalWithdrawAmountException {
-        checkForNegativeAmount(withdrawnAmount);
-
-        BigDecimal newBalance = currentBalance.subtract(withdrawnAmount);
-        if(rule.withdrawPermitted(newBalance)){
-            withdraw(withdrawnAmount);
-            return newBalance;
-        }
-        throw new IllegalBalanceException("Illegal account balance: "+newBalance);
+    public BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount) throws IllegalBalanceException, IllegalWithdrawAmountException {
+        currentStrategy.withdraw(withdrawnAmount);
+        return getBalance();
     }
 
-    private void withdraw(BigDecimal withdrawnAmount) {
+    void withdraw(BigDecimal withdrawnAmount) {
         currentBalance = currentBalance.subtract(withdrawnAmount);
-    }
-
-    private void checkForNegativeAmount(BigDecimal amount) throws IllegalWithdrawAmountException {
-        if (amount.compareTo(BigDecimal.ZERO) < 1) {
-            throw new IllegalWithdrawAmountException("Illegal amount: " + amount);
-        }
     }
 }
