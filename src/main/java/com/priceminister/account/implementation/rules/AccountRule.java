@@ -10,7 +10,6 @@ import java.math.BigDecimal;
  * Checks if the requested operation is permitted.
  */
 public interface AccountRule {
-    
     void withdrawPermitted(BigDecimal withdrawAmount, Account account) throws IllegalBalanceException, IllegalWithdrawAmountException;
     void add(BigDecimal sumToAdd) throws IllegalWithdrawAmountException;
 }

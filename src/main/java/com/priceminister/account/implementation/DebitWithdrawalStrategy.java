@@ -4,7 +4,7 @@ import com.priceminister.account.WithdrawalStrategy;
 import com.priceminister.account.exceptions.IllegalBalanceException;
 import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
 import com.priceminister.account.implementation.rules.AccountRule;
-import com.priceminister.account.implementation.rules.CustomerAccountRule;
+import com.priceminister.account.implementation.rules.NoNegativeBalanceRule;
 import com.priceminister.account.implementation.rules.NoNegativeAmountRule;
 
 import java.math.BigDecimal;
@@ -23,7 +23,7 @@ public class DebitWithdrawalStrategy implements WithdrawalStrategy{
     }
 
     private void initRules() {
-        rules.add(new CustomerAccountRule());
+        rules.add(new NoNegativeBalanceRule());
         rules.add(new NoNegativeAmountRule());
     }
 

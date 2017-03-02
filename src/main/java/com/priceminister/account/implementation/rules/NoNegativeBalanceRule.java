@@ -1,28 +1,13 @@
-/*
- * =============================================================================
- *
- *   PRICE MINISTER APPLICATION
- *   Copyright (c) 2000 Babelstore.
- *   All Rights Reserved.
- *
- *   $Source$
- *   $Revision$
- *   $Date$
- *   $Author$
- *
- * =============================================================================
- */
 package com.priceminister.account.implementation.rules;
 
 import com.priceminister.account.Account;
-import com.priceminister.account.exceptions.AccountException;
 import com.priceminister.account.exceptions.IllegalBalanceException;
 import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
 
 import java.math.BigDecimal;
 
 
-public class CustomerAccountRule implements AccountRule {
+public class NoNegativeBalanceRule implements AccountRule {
     @Override
     public void withdrawPermitted(BigDecimal withdrawAmount, Account account) throws IllegalBalanceException {
         BigDecimal resultingAccountBalance = account.getBalance().subtract(withdrawAmount);
