@@ -20,6 +20,7 @@ public class CustomerAccount implements Account {
 
     public CustomerAccount(WithdrawalStrategy withdrawalStrategy) {
         this.currentStrategy = withdrawalStrategy;
+        currentStrategy.setAccount(this);
         currentBalance = BigDecimal.ZERO;
     }
 

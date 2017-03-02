@@ -1,5 +1,6 @@
 package com.priceminister.account.implementation;
 
+import com.priceminister.account.Account;
 import com.priceminister.account.WithdrawalStrategy;
 import com.priceminister.account.exceptions.IllegalBalanceException;
 import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
@@ -30,6 +31,11 @@ public class DebitWithdrawalStrategy implements WithdrawalStrategy{
     @Override
     public void addRule(AccountRule rule) {
         this.rules.add(rule);
+    }
+
+    @Override
+    public void setAccount(CustomerAccount account) {
+        this.account = account;
     }
 
     @Override

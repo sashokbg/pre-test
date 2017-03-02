@@ -3,8 +3,8 @@ package com.priceminister.account;
 
 import com.priceminister.account.exceptions.IllegalBalanceException;
 import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
+import com.priceminister.account.implementation.CreditWithdrawStrategy;
 import com.priceminister.account.implementation.CustomerAccount;
-import com.priceminister.account.implementation.rules.AccountRule;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,9 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 public class CustomerAccountTest {
     private static final int POSITIVE_VALUE = 27;
-    public static final double DECIMAL_VAL = 0.33;
     private Account customerAccount;
-    private AccountRule rule;
 
     @Before
     public void setUp() throws Exception {
@@ -136,6 +134,20 @@ public class CustomerAccountTest {
         assertThatExceptionOfType(IllegalWithdrawAmountException.class)
                 .isThrownBy(() -> customerAccount.add(amountToAdd))
                 .withMessage("Illegal amount: -3");
+    }
+
+    @Test
+    public void should_allow_negative_balance_for_credit() throws IllegalBalanceException, IllegalWithdrawAmountException {
+        //given a fresh account with credit strategy
+        CustomerAccount creditAccount = new CustomerAccount(new CreditWithdrawStrategy());
+
+        BigDecimal amountToWithdraw = BigDecimal.valueOf(POSITIVE_VALUE);
+
+        //when we withdraw such an amount that the balance gets negative
+        BigDecimal balance = creditAccount.withdrawAndReportBalance(amountToWithdraw);
+
+        //then there should be no exception and balance should be negative
+        assertThat(balance).isEqualTo(new BigDecimal("-"+POSITIVE_VALUE));
     }
 
 }
