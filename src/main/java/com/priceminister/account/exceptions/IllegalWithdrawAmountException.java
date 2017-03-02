@@ -1,4 +1,4 @@
-package com.priceminister.account.implementation;
+package com.priceminister.account.exceptions;
 
 public class IllegalWithdrawAmountException extends Exception{
     public IllegalWithdrawAmountException() {

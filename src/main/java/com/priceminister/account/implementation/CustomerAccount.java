@@ -2,7 +2,8 @@ package com.priceminister.account.implementation;
 
 import com.priceminister.account.Account;
 import com.priceminister.account.AccountRule;
-import com.priceminister.account.IllegalBalanceException;
+import com.priceminister.account.exceptions.IllegalBalanceException;
+import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
 
 import java.math.BigDecimal;
 

@@ -1,6 +1,8 @@
 package com.priceminister.account;
 
 
+import com.priceminister.account.exceptions.IllegalBalanceException;
+import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
 import com.priceminister.account.implementation.*;
 import org.junit.Before;
 import org.junit.Test;

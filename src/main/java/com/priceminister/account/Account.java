@@ -1,6 +1,7 @@
 package com.priceminister.account;
 
-import com.priceminister.account.implementation.IllegalWithdrawAmountException;
+import com.priceminister.account.exceptions.IllegalBalanceException;
+import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
 
 import java.math.BigDecimal;
 
