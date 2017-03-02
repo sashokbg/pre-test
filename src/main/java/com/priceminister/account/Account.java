@@ -12,7 +12,7 @@ public interface Account {
      * Adds money to this account.
      * @param addedAmount - the money to add
      */
-    public void add(BigDecimal addedAmount);
+    void add(BigDecimal addedAmount);
     
     /**
      * Withdraws money from the account.
@@ -21,11 +21,11 @@ public interface Account {
      * @return the remaining account balance
      * @throws IllegalBalanceException if the withdrawal leaves the account with a forbidden balance
      */
-    public BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount, AccountRule rule) throws IllegalBalanceException;
+    BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount, AccountRule rule) throws IllegalBalanceException;
     
     /**
      * Gets the current account balance.
      * @return the account's balance
      */
-    public BigDecimal getBalance();
+    BigDecimal getBalance();
 }
