@@ -70,7 +70,7 @@ public class CustomerAccountTest {
     }
 
 
-    @Test(expected = IllegalBalanceException.class)
+    @Test
     public void should_successfully_withdraw_money_if_positive_amount_after_op() throws IllegalBalanceException {
         //given an account with a balance that is bigger than the withdrawal
         BigDecimal amountToWithdraw = BigDecimal.valueOf(POSITIVE_VALUE);
@@ -85,7 +85,6 @@ public class CustomerAccountTest {
         //and we should have a new balance equal to the difference of the two amounts
         assertThat(withdrawedAmount).isEqualTo(amountToWithdraw);
     }
-
     // Also implement missing unit tests for the above functionalities.
 
 }

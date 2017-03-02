@@ -9,11 +9,9 @@ import java.math.BigDecimal;
 
 public class CustomerAccount implements Account {
     private BigDecimal currentBalance;
-    private BigDecimal minimumAllowedValue;
 
     public CustomerAccount() {
         currentBalance = BigDecimal.ZERO;
-        minimumAllowedValue = BigDecimal.ZERO;
     }
 
     public void add(BigDecimal addedAmount) {
@@ -29,8 +27,13 @@ public class CustomerAccount implements Account {
 
         BigDecimal newBalance = currentBalance.subtract(withdrawnAmount);
         if(rule.withdrawPermitted(newBalance)){
+            withdraw(withdrawnAmount);
             return newBalance;
         }
         throw new IllegalBalanceException("Illegal account balance: "+newBalance);
+    }
+
+    private void withdraw(BigDecimal withdrawnAmount) {
+        currentBalance = currentBalance.subtract(withdrawnAmount);
     }
 }
