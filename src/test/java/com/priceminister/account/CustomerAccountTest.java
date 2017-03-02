@@ -1,16 +1,19 @@
 package com.priceminister.account;
 
 
-import static org.junit.Assert.*;
-
-import org.junit.*;
-
 import com.priceminister.account.implementation.*;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.math.BigDecimal;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 
 /**
  * Please create the business code, starting from the unit tests below.
- * Implement the first test, the develop the code that makes it pass.
+ * Implement the first test, then develop the code that makes it pass.
  * Then focus on the second test, and so on.
  * 
  * We want to see how you "think code", and how you organize and structure a simple application.
@@ -19,9 +22,10 @@ import com.priceminister.account.implementation.*;
  * 
  */
 public class CustomerAccountTest {
-    
-    Account customerAccount;
-    AccountRule rule;
+
+    public static final int POSITIVE_VALUE = 1;
+    private Account customerAccount;
+    private AccountRule rule;
 
     /**
      * @throws java.lang.Exception
@@ -36,7 +40,14 @@ public class CustomerAccountTest {
      */
     @Test
     public void testAccountWithoutMoneyHasZeroBalance() {
-        fail("not yet implemented");
+        //given a a fresh account and a balance of zero
+        BigDecimal zeroBalance = BigDecimal.valueOf(0);
+
+        //when we get the account balance
+        BigDecimal balance = customerAccount.getBalance();
+
+        //then should be equal to zero
+        assertThat(balance).isEqualTo(zeroBalance);
     }
     
     /**
@@ -44,18 +55,52 @@ public class CustomerAccountTest {
      */
     @Test
     public void testAddPositiveAmount() {
-        fail("not yet implemented");
+        //given a fresh account and an amount to add
+        BigDecimal amountToAdd = BigDecimal.valueOf(POSITIVE_VALUE);
+        BigDecimal oldBalance = customerAccount.getBalance();
+
+        //when we add the amount
+        customerAccount.add(amountToAdd);
+
+        //then we should have a new balance of 1
+        assertThat(customerAccount.getBalance()).isEqualTo(amountToAdd.add(oldBalance));
     }
     
     /**
      * Tests that an illegal withdrawal throws the expected exception.
      * Use the logic contained in CustomerAccountRule; feel free to refactor the existing code.
      */
-    @Test
-    public void testWithdrawAndReportBalanceIllegalBalance() {
-        fail("not yet implemented");
+    @Test(expected = IllegalBalanceException.class)
+    public void testWithdrawAndReportBalanceIllegalBalance() throws IllegalBalanceException {
+        //given a fresh account with 0 balance and amount to withdraw
+        BigDecimal amountToWithdraw = BigDecimal.valueOf(POSITIVE_VALUE);
+
+        //when we withdraw the amount
+        customerAccount.withdrawAndReportBalance(amountToWithdraw, new CustomerAccountRule());
+
+        //then should throw illegal balance exception
     }
-    
+
+    /**
+     * Tests that an illegal withdrawal throws the expected exception.
+     * Use the logic contained in CustomerAccountRule; feel free to refactor the existing code.
+     */
+    @Test(expected = IllegalBalanceException.class)
+    public void testWithdrawWithLegalAmount() throws IllegalBalanceException {
+        //given an account with a balance that is bigger than the withdrawal
+        BigDecimal amountToWithdraw = BigDecimal.valueOf(POSITIVE_VALUE);
+        BigDecimal balance = BigDecimal.valueOf(POSITIVE_VALUE+1);
+        customerAccount.add(balance);
+
+        //when we withdraw the amount
+        BigDecimal withdrawedAmount = customerAccount.withdrawAndReportBalance(amountToWithdraw, new CustomerAccountRule());
+
+        //then we should have a new balance equal to the difference of the two amounts
+        assertThat(customerAccount.getBalance()).isEqualTo(balance.subtract(amountToWithdraw));
+        //and we should have a new balance equal to the difference of the two amounts
+        assertThat(withdrawedAmount).isEqualTo(amountToWithdraw);
+    }
+
     // Also implement missing unit tests for the above functionalities.
 
 }
