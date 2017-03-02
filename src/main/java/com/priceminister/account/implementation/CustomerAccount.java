@@ -15,19 +15,21 @@ public class CustomerAccount implements Account {
         currentBalance = BigDecimal.ZERO;
     }
 
-    public void add(BigDecimal addedAmount) {
+    @Override
+    public void add(BigDecimal addedAmount) throws IllegalWithdrawAmountException {
+        checkForNegativeAmount(addedAmount);
         currentBalance = currentBalance.add(addedAmount);
     }
 
+    @Override
     public BigDecimal getBalance() {
         return currentBalance;
     }
 
+    @Override
     public BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount, AccountRule rule)
             throws IllegalBalanceException, IllegalWithdrawAmountException {
-        if(withdrawnAmount.compareTo(BigDecimal.ZERO) < 1){
-            throw new IllegalWithdrawAmountException("Illegal withdraw amount: "+withdrawnAmount);
-        }
+        checkForNegativeAmount(withdrawnAmount);
 
         BigDecimal newBalance = currentBalance.subtract(withdrawnAmount);
         if(rule.withdrawPermitted(newBalance)){
@@ -39,5 +41,11 @@ public class CustomerAccount implements Account {
 
     private void withdraw(BigDecimal withdrawnAmount) {
         currentBalance = currentBalance.subtract(withdrawnAmount);
+    }
+
+    private void checkForNegativeAmount(BigDecimal amount) throws IllegalWithdrawAmountException {
+        if (amount.compareTo(BigDecimal.ZERO) < 1) {
+            throw new IllegalWithdrawAmountException("Illegal amount: " + amount);
+        }
     }
 }

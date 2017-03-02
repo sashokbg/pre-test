@@ -3,7 +3,8 @@ package com.priceminister.account;
 
 import com.priceminister.account.exceptions.IllegalBalanceException;
 import com.priceminister.account.exceptions.IllegalWithdrawAmountException;
-import com.priceminister.account.implementation.*;
+import com.priceminister.account.implementation.CustomerAccount;
+import com.priceminister.account.implementation.CustomerAccountRule;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +12,6 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -25,7 +25,7 @@ import static org.junit.Assert.fail;
  * 
  */
 public class CustomerAccountTest {
-    private static final int POSITIVE_VALUE = 1;
+    private static final int POSITIVE_VALUE = 27;
     public static final double DECIMAL_VAL = 0.33;
     private Account customerAccount;
     private AccountRule rule;
@@ -38,17 +38,17 @@ public class CustomerAccountTest {
     @Test
     public void empty_account_should_have_zero_balance() {
         //given a a fresh account and a balance of zero
-        BigDecimal zeroBalance = BigDecimal.valueOf(0);
+        BigDecimal zeroAmount = BigDecimal.valueOf(0);
 
         //when we get the account balance
         BigDecimal balance = customerAccount.getBalance();
 
         //then should be equal to zero
-        assertThat(balance).isEqualTo(zeroBalance);
+        assertThat(balance).isEqualTo(zeroAmount);
     }
 
     @Test
-    public void add_positive_amount_to_account() {
+    public void add_positive_amount_to_account() throws IllegalWithdrawAmountException {
         //given a fresh account and an amount to add
         BigDecimal amountToAdd = BigDecimal.valueOf(POSITIVE_VALUE);
         BigDecimal oldBalance = customerAccount.getBalance();
@@ -72,7 +72,6 @@ public class CustomerAccountTest {
                 .withMessage("Illegal account balance: "+customerAccount.getBalance().subtract(amountToWithdraw));
     }
 
-
     @Test
     public void should_successfully_withdraw_money_if_positive_amount_after_op() throws IllegalBalanceException, IllegalWithdrawAmountException {
         //given an account with a balance that is bigger than the withdrawal
@@ -81,16 +80,14 @@ public class CustomerAccountTest {
         customerAccount.add(balance);
 
         //when we withdraw the amount
-        BigDecimal withdrawedAmount = customerAccount.withdrawAndReportBalance(amountToWithdraw, new CustomerAccountRule());
+        BigDecimal newBalance = customerAccount.withdrawAndReportBalance(amountToWithdraw, new CustomerAccountRule());
 
         //then we should have a new balance equal to the difference of the two amounts
-        assertThat(customerAccount.getBalance()).isEqualTo(balance.subtract(amountToWithdraw));
-        //and we should have a new balance equal to the difference of the two amounts
-        assertThat(withdrawedAmount).isEqualTo(amountToWithdraw);
+        assertThat(newBalance).isEqualTo(balance.subtract(amountToWithdraw));
     }
 
     @Test
-    public void should_add_a_decimal_value_to_balance(){
+    public void should_add_a_decimal_value_to_balance() throws IllegalWithdrawAmountException {
         //given an account with cash and a decimal amount to add
         customerAccount.add(new BigDecimal(POSITIVE_VALUE));
         BigDecimal addedAmount = new BigDecimal("0.33");
@@ -99,7 +96,7 @@ public class CustomerAccountTest {
         customerAccount.add(addedAmount);
 
         //we expect the exact result to be in the balance
-        assertThat(customerAccount.getBalance()).isEqualTo(new BigDecimal("1.33"));
+        assertThat(customerAccount.getBalance()).isEqualTo(new BigDecimal(POSITIVE_VALUE+".33"));
     }
 
     @Test
@@ -112,11 +109,11 @@ public class CustomerAccountTest {
         BigDecimal balance = customerAccount.withdrawAndReportBalance(withdrawnAmount, new CustomerAccountRule());
 
         //we expect the exact value for the balance
-        assertThat(balance).isEqualTo(new BigDecimal("0.67"));
+        assertThat(balance).isEqualTo(new BigDecimal("26.67"));
     }
 
     @Test
-    public void should_not_allow_withdraw_of_negative_amounts() throws IllegalBalanceException {
+    public void should_not_allow_withdraw_of_negative_amounts() throws IllegalBalanceException, IllegalWithdrawAmountException {
         //given an account with cash and a negative withdraw amount
         customerAccount.add(new BigDecimal(POSITIVE_VALUE));
         BigDecimal withdrawnAmount = new BigDecimal("-3");
@@ -125,7 +122,20 @@ public class CustomerAccountTest {
         //we expect an IllegalWithdrawAmountException exception
         assertThatExceptionOfType(IllegalWithdrawAmountException.class)
                 .isThrownBy(() -> customerAccount.withdrawAndReportBalance(withdrawnAmount, new CustomerAccountRule()))
-                .withMessage("Illegal withdraw amount: -3");
+                .withMessage("Illegal amount: -3");
+    }
+
+    @Test
+    public void should_not_allow_add_of_negative_amounts() throws IllegalBalanceException, IllegalWithdrawAmountException {
+        //given an account with cash and a negative amount to add
+        customerAccount.add(new BigDecimal(POSITIVE_VALUE));
+        BigDecimal amountToAdd = new BigDecimal("-3");
+
+        //when we withdraw the decimal sum
+        //we expect an IllegalWithdrawAmountException exception
+        assertThatExceptionOfType(IllegalWithdrawAmountException.class)
+                .isThrownBy(() -> customerAccount.add(amountToAdd))
+                .withMessage("Illegal amount: -3");
     }
 
 }

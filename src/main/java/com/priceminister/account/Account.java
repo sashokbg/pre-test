@@ -15,7 +15,7 @@ public interface Account {
      * Adds money to this account.
      * @param addedAmount - the money to add
      */
-    void add(BigDecimal addedAmount);
+    void add(BigDecimal addedAmount) throws IllegalWithdrawAmountException;;
     
     /**
      * Withdraws money from the account.
