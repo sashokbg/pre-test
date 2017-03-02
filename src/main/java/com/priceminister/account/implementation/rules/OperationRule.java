@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 /**
  * An interface representing operation rules
+ * TODO operations should be represented as structures and not only as methods
  */
 public interface OperationRule {
     /**

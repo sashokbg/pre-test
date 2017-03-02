@@ -13,6 +13,8 @@ import java.math.BigDecimal;
  *
  * @see com.priceminister.account.implementation.DebitWithdrawalStrategy
  * @see com.priceminister.account.implementation.CreditWithdrawStrategy
+ * TODO probably rename to OperationStrategy
+ * TODO probably change to Abstract class
  */
 public interface WithdrawalStrategy {
     void setAccount(CustomerAccount account);

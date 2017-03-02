@@ -42,9 +42,7 @@ public class DebitWithdrawalStrategy implements WithdrawalStrategy{
 
     @Override
     public void withdraw(BigDecimal amount) throws IllegalBalanceException, IllegalAmountException {
-        for(OperationRule rule : rules){
-            rule.withdrawPermitted(amount, account);
-        }
+        validateRules(amount);
         account.withdraw(amount);
     }
 
@@ -54,5 +52,11 @@ public class DebitWithdrawalStrategy implements WithdrawalStrategy{
             rule.add(amount);
         }
         account.addAmount(amount);
+    }
+
+    private void validateRules(BigDecimal amount) throws IllegalBalanceException, IllegalAmountException {
+        for(OperationRule rule : rules){
+            rule.withdrawPermitted(amount, account);
+        }
     }
 }
