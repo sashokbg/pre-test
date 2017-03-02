@@ -22,24 +22,17 @@ import static org.junit.Assert.fail;
  * 
  */
 public class CustomerAccountTest {
-
-    public static final int POSITIVE_VALUE = 1;
+    private static final int POSITIVE_VALUE = 1;
     private Account customerAccount;
     private AccountRule rule;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         customerAccount = new CustomerAccount();
     }
     
-    /**
-     * Tests that an empty account always has a balance of 0.0, not a NULL.
-     */
     @Test
-    public void testAccountWithoutMoneyHasZeroBalance() {
+    public void empty_account_should_have_zero_balance() {
         //given a a fresh account and a balance of zero
         BigDecimal zeroBalance = BigDecimal.valueOf(0);
 
@@ -49,12 +42,9 @@ public class CustomerAccountTest {
         //then should be equal to zero
         assertThat(balance).isEqualTo(zeroBalance);
     }
-    
-    /**
-     * Adds money to the account and checks that the new balance is as expected.
-     */
+
     @Test
-    public void testAddPositiveAmount() {
+    public void add_positive_amount_to_account() {
         //given a fresh account and an amount to add
         BigDecimal amountToAdd = BigDecimal.valueOf(POSITIVE_VALUE);
         BigDecimal oldBalance = customerAccount.getBalance();
@@ -65,13 +55,9 @@ public class CustomerAccountTest {
         //then we should have a new balance of 1
         assertThat(customerAccount.getBalance()).isEqualTo(amountToAdd.add(oldBalance));
     }
-    
-    /**
-     * Tests that an illegal withdrawal throws the expected exception.
-     * Use the logic contained in CustomerAccountRule; feel free to refactor the existing code.
-     */
+
     @Test(expected = IllegalBalanceException.class)
-    public void testWithdrawAndReportBalanceIllegalBalance() throws IllegalBalanceException {
+    public void should_fail_to_withdraw_money_if_no_money_after_operation() throws IllegalBalanceException {
         //given a fresh account with 0 balance and amount to withdraw
         BigDecimal amountToWithdraw = BigDecimal.valueOf(POSITIVE_VALUE);
 
@@ -81,12 +67,9 @@ public class CustomerAccountTest {
         //then should throw illegal balance exception
     }
 
-    /**
-     * Tests that an illegal withdrawal throws the expected exception.
-     * Use the logic contained in CustomerAccountRule; feel free to refactor the existing code.
-     */
+
     @Test(expected = IllegalBalanceException.class)
-    public void testWithdrawWithLegalAmount() throws IllegalBalanceException {
+    public void should_successfully_withdraw_money_if_positive_amount_after_op() throws IllegalBalanceException {
         //given an account with a balance that is bigger than the withdrawal
         BigDecimal amountToWithdraw = BigDecimal.valueOf(POSITIVE_VALUE);
         BigDecimal balance = BigDecimal.valueOf(POSITIVE_VALUE+1);
