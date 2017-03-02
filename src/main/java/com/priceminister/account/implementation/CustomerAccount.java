@@ -31,7 +31,6 @@ public class CustomerAccount implements Account {
         if(rule.withdrawPermitted(newBalance)){
             return newBalance;
         }
-        throw new IllegalBalanceException(newBalance);
+        throw new IllegalBalanceException("Illegal account balance: "+newBalance);
     }
-
 }

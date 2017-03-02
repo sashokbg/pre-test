@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.fail;
 
 
@@ -56,15 +57,16 @@ public class CustomerAccountTest {
         assertThat(customerAccount.getBalance()).isEqualTo(amountToAdd.add(oldBalance));
     }
 
-    @Test(expected = IllegalBalanceException.class)
+    @Test
     public void should_fail_to_withdraw_money_if_no_money_after_operation() throws IllegalBalanceException {
         //given a fresh account with 0 balance and amount to withdraw
         BigDecimal amountToWithdraw = BigDecimal.valueOf(POSITIVE_VALUE);
 
         //when we withdraw the amount
-        customerAccount.withdrawAndReportBalance(amountToWithdraw, new CustomerAccountRule());
-
         //then should throw illegal balance exception
+        assertThatExceptionOfType(IllegalBalanceException.class)
+                .isThrownBy(() -> customerAccount.withdrawAndReportBalance(amountToWithdraw, new CustomerAccountRule()))
+                .withMessage("Illegal account balance: "+customerAccount.getBalance().subtract(amountToWithdraw));
     }
 
 

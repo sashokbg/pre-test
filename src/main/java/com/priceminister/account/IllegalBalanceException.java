@@ -1,19 +1,23 @@
 package com.priceminister.account;
 
-
-import java.math.BigDecimal;
-
 public class IllegalBalanceException extends Exception {
     
-    private static final long serialVersionUID = -9204191749972551939L;
-    
-	private BigDecimal balance;
-    
-    public IllegalBalanceException(BigDecimal illegalBalance) {
-        balance = illegalBalance;
+    public IllegalBalanceException() {
     }
-    
-    public String toString() {
-        return "Illegal account balance: " + balance;
+
+    public IllegalBalanceException(String message) {
+        super(message);
+    }
+
+    public IllegalBalanceException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public IllegalBalanceException(Throwable cause) {
+        super(cause);
+    }
+
+    public IllegalBalanceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }
