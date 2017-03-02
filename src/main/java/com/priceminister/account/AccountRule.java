@@ -1,5 +1,7 @@
 package com.priceminister.account;
 
+import java.math.BigDecimal;
+
 /**
  * Checks if the requested operation is permitted.
  */
@@ -11,5 +13,5 @@ public interface AccountRule {
      * @param resultingAccountBalance - the amount resulting of the withdrawal
      * @return true if the operation is permitted, false otherwise
      */
-    boolean withdrawPermitted(Double resultingAccountBalance);
+    boolean withdrawPermitted(BigDecimal resultingAccountBalance);
 }
