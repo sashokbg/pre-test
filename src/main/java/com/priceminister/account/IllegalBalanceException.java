@@ -1,7 +1,7 @@
 package com.priceminister.account;
 
 public class IllegalBalanceException extends Exception {
-    
+
     public IllegalBalanceException() {
     }
 

@@ -23,7 +23,10 @@ public class CustomerAccount implements Account {
     }
 
     public BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount, AccountRule rule)
-    		throws IllegalBalanceException {
+            throws IllegalBalanceException, IllegalWithdrawAmountException {
+        if(withdrawnAmount.compareTo(BigDecimal.ZERO) < 1){
+            throw new IllegalWithdrawAmountException("Illegal withdraw amount: "+withdrawnAmount);
+        }
 
         BigDecimal newBalance = currentBalance.subtract(withdrawnAmount);
         if(rule.withdrawPermitted(newBalance)){

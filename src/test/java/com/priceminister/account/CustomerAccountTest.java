@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
  */
 public class CustomerAccountTest {
     private static final int POSITIVE_VALUE = 1;
+    public static final double DECIMAL_VAL = 0.33;
     private Account customerAccount;
     private AccountRule rule;
 
@@ -71,7 +72,7 @@ public class CustomerAccountTest {
 
 
     @Test
-    public void should_successfully_withdraw_money_if_positive_amount_after_op() throws IllegalBalanceException {
+    public void should_successfully_withdraw_money_if_positive_amount_after_op() throws IllegalBalanceException, IllegalWithdrawAmountException {
         //given an account with a balance that is bigger than the withdrawal
         BigDecimal amountToWithdraw = BigDecimal.valueOf(POSITIVE_VALUE);
         BigDecimal balance = BigDecimal.valueOf(POSITIVE_VALUE+1);
@@ -85,6 +86,44 @@ public class CustomerAccountTest {
         //and we should have a new balance equal to the difference of the two amounts
         assertThat(withdrawedAmount).isEqualTo(amountToWithdraw);
     }
-    // Also implement missing unit tests for the above functionalities.
+
+    @Test
+    public void should_add_a_decimal_value_to_balance(){
+        //given an account with cash and a decimal amount to add
+        customerAccount.add(new BigDecimal(POSITIVE_VALUE));
+        BigDecimal addedAmount = new BigDecimal("0.33");
+
+        //when we add a decimal sum
+        customerAccount.add(addedAmount);
+
+        //we expect the exact result to be in the balance
+        assertThat(customerAccount.getBalance()).isEqualTo(new BigDecimal("1.33"));
+    }
+
+    @Test
+    public void should_withdraw_a_decimal_value_from_balance() throws IllegalBalanceException, IllegalWithdrawAmountException {
+        //given an account with cash and a decimal withdraw amount
+        customerAccount.add(new BigDecimal(POSITIVE_VALUE));
+        BigDecimal withdrawnAmount = new BigDecimal("0.33");
+
+        //when we withdraw the decimal sum
+        BigDecimal balance = customerAccount.withdrawAndReportBalance(withdrawnAmount, new CustomerAccountRule());
+
+        //we expect the exact value for the balance
+        assertThat(balance).isEqualTo(new BigDecimal("0.67"));
+    }
+
+    @Test
+    public void should_not_allow_withdraw_of_negative_amounts() throws IllegalBalanceException {
+        //given an account with cash and a negative withdraw amount
+        customerAccount.add(new BigDecimal(POSITIVE_VALUE));
+        BigDecimal withdrawnAmount = new BigDecimal("-3");
+
+        //when we withdraw the decimal sum
+        //we expect an IllegalWithdrawAmountException exception
+        assertThatExceptionOfType(IllegalWithdrawAmountException.class)
+                .isThrownBy(() -> customerAccount.withdrawAndReportBalance(withdrawnAmount, new CustomerAccountRule()))
+                .withMessage("Illegal withdraw amount: -3");
+    }
 
 }

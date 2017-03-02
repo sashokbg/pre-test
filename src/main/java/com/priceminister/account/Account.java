@@ -1,5 +1,7 @@
 package com.priceminister.account;
 
+import com.priceminister.account.implementation.IllegalWithdrawAmountException;
+
 import java.math.BigDecimal;
 
 /**
@@ -21,7 +23,7 @@ public interface Account {
      * @return the remaining account balance
      * @throws IllegalBalanceException if the withdrawal leaves the account with a forbidden balance
      */
-    BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount, AccountRule rule) throws IllegalBalanceException;
+    BigDecimal withdrawAndReportBalance(BigDecimal withdrawnAmount, AccountRule rule) throws IllegalBalanceException, IllegalWithdrawAmountException;
     
     /**
      * Gets the current account balance.
